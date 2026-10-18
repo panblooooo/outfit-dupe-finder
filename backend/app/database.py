@@ -1,12 +1,17 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-engine = create_engine("sqlite:///./dupe_finder.db", connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(bind=engine, autoflush=False)
+SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db"
 
-class Base(DeclarativeBase):
-    pass
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+Base = declarative_base()
+
+# Fungsi dependency DB untuk FastAPI
 def get_db():
     db = SessionLocal()
     try:
