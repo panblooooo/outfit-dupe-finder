@@ -6,7 +6,20 @@ from ..database import get_db
 from ..services.catalog import attrs_of, all_attribute_pairs
 from ..services.similarity import build_vocab, find_dupes
 
-router = APIRouter(prefix="/products", tags=["RF-004, RF-005, RF-006 Pencarian Dupe"])
+router = APIRouter(prefix="/products", tags=["RF-004 sampai RF-007 Pencarian Dupe"])
+
+LABEL = {"bahan": "Bahan", "warna": "Warna", "fit": "Potongan", "style": "Style"}
+
+
+def build_comparison(ref_attrs, dupe_attrs):
+    """Matriks perbandingan atribut produk referensi vs dupe (RF-007)."""
+    rows = []
+    for tipe, label in LABEL.items():
+        r = sorted(ref_attrs.get(tipe, []))
+        d = sorted(dupe_attrs.get(tipe, []))
+        rows.append({"atribut": label, "referensi": ", ".join(r),
+                     "dupe": ", ".join(d), "sama": r == d})
+    return rows
 
 
 @router.get("/{product_id}/dupes")
@@ -29,17 +42,22 @@ def get_dupes(product_id: int,
 
     pool = [(c, attrs_of(db, "dupe", c.id)) for c in cands]
     attr_map = {c.id: a for c, a in pool}
-    ranked = find_dupes(attrs_of(db, "high_end", ref.id), pool,
-                        build_vocab(all_attribute_pairs(db)), limit, min_score)
+    ref_attrs = attrs_of(db, "high_end", ref.id)
+    ranked = find_dupes(ref_attrs, pool, build_vocab(all_attribute_pairs(db)), limit, min_score)
 
     results = [{
         "rank": i, "id": c.id, "brand_lokal": c.brand_lokal, "nama_produk": c.nama_produk,
         "harga": c.harga, "image_url": c.image_url, "attributes": attr_map[c.id],
         "similarity": {"score": s, "percent": round(s * 100)},
+        "price_diff": {"nominal": ref.harga - c.harga,
+                       "persen": round((ref.harga - c.harga) / ref.harga * 100)},
+        "comparison": build_comparison(ref_attrs, attr_map[c.id]),
+        "buy_url": f"/go/{c.id}?ref={ref.id}",
     } for i, (s, c) in enumerate(ranked, 1)]
 
     return {
-        "data": {"reference": {"id": ref.id, "nama_produk": ref.nama_produk, "harga": ref.harga},
+        "data": {"reference": {"id": ref.id, "nama_produk": ref.nama_produk,
+                               "harga": ref.harga, "attributes": ref_attrs},
                  "results": results},
         "meta": {"count": len(results), "max_price": max_price, "limit": limit, "min_score": min_score},
     }
