@@ -1,4 +1,5 @@
-from sqlalchemy import String, Integer, Float, Text, ForeignKey
+from datetime import datetime, timezone
+from sqlalchemy import String, Integer, Float, Text, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 
@@ -42,3 +43,10 @@ class ProductAttribute(Base):
     product_type: Mapped[str] = mapped_column(String(10))   # "high_end" atau "dupe"
     product_id: Mapped[int] = mapped_column(Integer)
     attribute_id: Mapped[int] = mapped_column(ForeignKey("attributes.id"))
+
+class AffiliateClick(Base):
+    __tablename__ = "affiliate_clicks"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    dupe_id: Mapped[int] = mapped_column(ForeignKey("dupe_products.id"))
+    reference_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    clicked_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(timezone.utc))

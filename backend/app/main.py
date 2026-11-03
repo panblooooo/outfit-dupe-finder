@@ -1,13 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import Base, engine
-from .routers import products, dupes
+from .routers import products, dupes, affiliate
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Outfit Dupe Finder API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.include_router(products.router)
 app.include_router(dupes.router)
+app.include_router(affiliate.router)
 
 
 @app.get("/health")

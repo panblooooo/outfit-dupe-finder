@@ -47,20 +47,20 @@ Menjalankan tes: `python -m pytest`
 - [x] RF-004 Filter Batas Harga (Budget Limit)
 - [x] RF-005 Pencocokan Cosine Similarity
 - [x] RF-006 Pemeringkatan Produk Dupe
-- [ ] RF-007 Penyajian Komparasi Atribut
-- [ ] RF-008 Pengalihan Affiliate Link
+- [x] RF-007 Penyajian Komparasi Atribut
+- [x] RF-008 Pengalihan Affiliate Link
 - [ ] RF-009 Pengelolaan Master Data Produk
 - [ ] RF-010 Pengelolaan Atribut dan Pembobotan
 - [ ] RF-011 Impor Massal Data
 
-**Progress: 4/11 kebutuhan fungsional (36%), 3/5 fitur utama (60%)**
+**Progress: 6/11 kebutuhan fungsional (55%), 4/5 fitur utama (80%)**
 
 | Fitur | Status |
 |---|---|
 | F1 Katalog dan Pencarian | Selesai |
 | F2 Detail dan Budget | Selesai |
 | F3 Mesin Similarity | Selesai |
-| F4 Komparasi dan Tombol Beli | Ditunda |
+| F4 Komparasi dan Tombol Beli | Selesai |
 | F5 Admin CRUD | Ditunda |
 
 ## Catatan Data

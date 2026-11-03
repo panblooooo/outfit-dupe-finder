@@ -59,22 +59,22 @@ def run():
     outer = cats["Outer"].id
     add_product(db, cache, m.DupeProduct, "dupe",
         dict(brand_lokal="ISI_BRAND_LOKAL_A", nama_produk="ISI_NAMA_A", harga=289000,
-             affiliate_url=None, category_id=outer, image_url=None),
+             affiliate_url="https://shopee.co.id/search?keyword=work%20jacket%20boxy", category_id=outer, image_url=None),
         {"bahan": "katun twill", "fit": "boxy", "warna": "olive", "style": "workwear"})
 
     add_product(db, cache, m.DupeProduct, "dupe",
         dict(brand_lokal="ISI_BRAND_LOKAL_B", nama_produk="ISI_NAMA_B", harga=329000,
-             affiliate_url=None, category_id=outer, image_url=None),
+             affiliate_url="https://shopee.co.id/search?keyword=work%20jacket%20boxy", category_id=outer, image_url=None),
         {"bahan": "katun canvas", "fit": "boxy", "warna": "olive", "style": "utility"})
 
     add_product(db, cache, m.DupeProduct, "dupe",
         dict(brand_lokal="ISI_BRAND_LOKAL_C", nama_produk="ISI_NAMA_C", harga=219000,
-             affiliate_url=None, category_id=outer, image_url=None),
+             affiliate_url="https://shopee.co.id/search?keyword=work%20jacket%20boxy", category_id=outer, image_url=None),
         {"bahan": "katun twill", "fit": "regular", "warna": "hijau army", "style": "utility"})
 
     add_product(db, cache, m.DupeProduct, "dupe",
         dict(brand_lokal="ISI_BRAND_LOKAL_D", nama_produk="ISI_NAMA_D", harga=199000,
-             affiliate_url=None, category_id=outer, image_url=None),
+             affiliate_url="https://shopee.co.id/search?keyword=work%20jacket%20boxy", category_id=outer, image_url=None),
         {"bahan": "katun canvas", "fit": "slim", "warna": "hitam", "style": "casual"})
 
     db.commit()
