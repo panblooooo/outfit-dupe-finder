@@ -7,6 +7,7 @@ from ..services.catalog import attrs_of
 
 router = APIRouter(prefix="/products", tags=["RF-003 Pencarian Produk"])
 
+
 @router.get("")
 def list_products(
     q: str | None = None,
@@ -16,7 +17,7 @@ def list_products(
 ):
     H = models.HighEndProduct
     stmt = select(H)
-    
+
     if q:
         stmt = stmt.where(
             or_(
@@ -35,7 +36,8 @@ def list_products(
                 "brand": p.brand,
                 "nama_produk": p.nama_produk,
                 "harga": p.harga,
-                "image_url": p.image_url
+                "image_url": p.image_url,
+                "kategori": p.category.nama_kategori if p.category else None,
             }
             for p in rows
         ],
@@ -46,6 +48,7 @@ def list_products(
         }
     }
 
+
 @router.get("/{product_id}")
 def product_detail(product_id: int, db: Session = Depends(get_db)):
     p = db.get(models.HighEndProduct, product_id)
@@ -54,6 +57,7 @@ def product_detail(product_id: int, db: Session = Depends(get_db)):
     return {
         "id": p.id, "brand": p.brand, "nama_produk": p.nama_produk,
         "harga": p.harga, "image_url": p.image_url,
+        "kategori": p.category.nama_kategori if p.category else None,
         "attributes": attrs_of(db, "high_end", p.id),
         "budget_range": {"min": 100_000, "max": p.harga - 1},
     }
