@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "./api";
 
 const CATEGORIES = ["Semua", "Atasan", "Bawahan", "Dress", "Outer"];
