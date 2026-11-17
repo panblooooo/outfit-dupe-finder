@@ -12,7 +12,9 @@ const attributes = (obj = {}) => [
   ["Potongan", (obj.fit || []).join?.(", ") || obj.fit || "—"],
 ];
 
-function Logo() { return <a className="logo" href="#" onClick={(e) => { e.preventDefault(); window.location.hash = ""; }}>Dupe finder<span>.</span></a>; }
+function Logo({ onHome }) {
+  return <a className="logo" href="#" onClick={(e) => { e.preventDefault(); onHome(); }}>Dupe finder<span>.</span></a>;
+}
 
 function ImagePanel({ src, className = "", label = "Outfit" }) {
   return <div className={`image-panel ${className}`}>
@@ -21,7 +23,7 @@ function ImagePanel({ src, className = "", label = "Outfit" }) {
 }
 
 function Header({ onHome }) {
-  return <header className="site-header"><button className="logo-button" onClick={onHome}><Logo /></button><span className="header-note">DISCOVER YOUR NEXT LOOK</span></header>;
+  return <header className="site-header"><Logo onHome={onHome} /><span className="header-note">DISCOVER YOUR NEXT LOOK</span></header>;
 }
 
 function ProductCard({ product, onSelect }) {
@@ -46,16 +48,31 @@ function Catalog({ onSelect }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const loadProducts = useCallback(async (q) => {
-    setLoading(true); setError("");
+  const loadProducts = useCallback(async (q, signal) => {
+    setLoading(true);
+    setError("");
     try {
-      const result = await api.products({ q, perPage: 48 });
-      setProducts(result.data || []);
-    } catch (err) { setError(err.message); setProducts([]); }
-    finally { setLoading(false); }
+      const result = await api.products({ q, perPage: 48, signal });
+      if (!signal.aborted) setProducts(result.data || []);
+    } catch (err) {
+      if (!signal.aborted) {
+        setError(err.message);
+        setProducts([]);
+      }
+    } finally {
+      if (!signal.aborted) setLoading(false);
+    }
   }, []);
 
-  useEffect(() => { const timer = setTimeout(() => loadProducts(query), 250); return () => clearTimeout(timer); }, [query, loadProducts]);
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    const timer = setTimeout(() => loadProducts(query, controller.signal), 250);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query, loadProducts]);
 
   const visibleProducts = useMemo(() => category === "Semua" ? products : products.filter((p) => (p.kategori || "").toLowerCase() === category.toLowerCase()), [products, category]);
 
